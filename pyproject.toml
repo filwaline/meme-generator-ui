@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "meme-generator-ui"
+version = "0.0.1"
+description = ""
+authors = ["filwaline <skywalker950925@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.8"
+meme-generator = "^0.0.18"
+pyyaml = "^6.0.1"
+typer = "^0.9.0"
+
+
+[tool.poetry.scripts]
+meme-from-yaml = "meme_generator_ui.create_memes_from_yaml:main"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
