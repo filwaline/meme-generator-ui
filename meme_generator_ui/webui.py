@@ -1,6 +1,7 @@
 import gradio as gr
 from meme_generator import get_meme, get_memes
 from meme_generator.exception import MemeGeneratorException
+from PIL import Image
 import json
 import filetype
 import os
@@ -68,6 +69,12 @@ async def meme_creator(key, images=None, texts_input="", args_input: dict = None
         raise gr.Error(e.message)
 
 
+async def generate_meme_preview(key: str):
+    meme = get_meme(key)
+    pv = await meme.generate_preview()
+    return gr.Image(Image.open(pv))
+
+
 meme_choices = [(f"{m.key:16} - {m.keywords}", m.key) for m in get_memes()]
 
 
@@ -80,16 +87,16 @@ with gr.Blocks() as webui:
             i4 = gr.Textbox(
                 '{"format": "json"}', lines=6, label="args", info="require json format"
             )
-            but = gr.Button()
+            buttun_run = gr.Button("Create", variant="primary")
         with gr.Column():
-            o1 = gr.Image()
+            buttun_preview = gr.Button("Preview", variant="secondary")
+            o1 = gr.Image(label="output", height=500)
+            gr.Markdown(
+                "[memes docs](https://github.com/MeetWq/meme-generator/blob/main/docs/memes.md)"
+            )
 
-    but.click(fn=meme_creator, inputs=[i1, i2, i3, i4], outputs=[o1])
-
-    with gr.Blocks():
-        gr.Markdown(
-            "[memes docs](https://github.com/MeetWq/meme-generator/blob/main/docs/memes.md)"
-        )
+    buttun_run.click(fn=meme_creator, inputs=[i1, i2, i3, i4], outputs=[o1])
+    buttun_preview.click(fn=generate_meme_preview, inputs=[i1], outputs=[o1])
 
 
 def main():
